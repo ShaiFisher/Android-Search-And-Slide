@@ -15,7 +15,7 @@ public class Utils {
         log(name + " " + value);
     }
     public static void log(String str) {
-        Log.d("Ex3Log", str);
+        Log.d("FinalProjectLog", str);
     }
 
     public static void log(String name, Exception e) {

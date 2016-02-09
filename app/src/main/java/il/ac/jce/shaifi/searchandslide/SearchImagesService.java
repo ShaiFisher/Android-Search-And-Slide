@@ -9,5 +9,5 @@ import javax.security.auth.callback.*;
  */
 public interface SearchImagesService {
 
-    public void searchImages(String query, SearchImagesHandler callBack);
+    public void searchImages(String query);
 }

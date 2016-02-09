@@ -28,14 +28,15 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         setContentView(R.layout.activity_main);
         Utils.log("onCreate");
         imageView = (ImageView) findViewById(R.id.imageView);
-        searchImagesService = new DummySearchImagesService();
+        //searchImagesService = new DummySearchImagesService(this);
+        searchImagesService = new GoogleSearchImageService(this, this);
 
         txtQuery = (EditText) findViewById(R.id.txt_query);
         btnSearch = (Button) findViewById(R.id.btn_search);
         btnSearch.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
-                     searchImagesService.searchImages(txtQuery.getText().toString(), self);
+                     searchImagesService.searchImages(txtQuery.getText().toString());
                  }
              }
         );
