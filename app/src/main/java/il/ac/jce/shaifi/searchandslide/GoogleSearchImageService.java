@@ -44,12 +44,12 @@ public class GoogleSearchImageService  implements SearchImagesService{
     private final String mApiKey = "AIzaSyAhiU0VSynjFE9xfXsOS64zxyq-dziNsSM";
     private final String mSearchEngineId = "017530607855097223459:gx-1qpn0cyi";
 
-    private List<String> mImageUrls;
+    private List<ImageResult> mImageUrls;
     private SearchImagesHandler mImageHandler;
     private Context mContext;
 
     public GoogleSearchImageService(Context context, SearchImagesHandler handler){
-        mImageUrls = new ArrayList<String>();
+        mImageUrls = new ArrayList<ImageResult>();
         mImageHandler = handler;
         mContext = context;
         mHttpRequestQueue = Volley.newRequestQueue(mContext);
@@ -127,11 +127,11 @@ public class GoogleSearchImageService  implements SearchImagesService{
 
 
     // extract a string array of urls from the json
-    private ArrayList<String> getImagesFromJSON(JSONArray imageArray) throws JSONException{
+    private ArrayList<ImageResult> getImagesFromJSON(JSONArray imageArray) throws JSONException{
 
         JSONObject obj;
         String url;
-        ArrayList<String> items = new ArrayList<String>();
+        ArrayList<ImageResult> items = new ArrayList<ImageResult>();
         GoogleImage item;
 
         // go over all json image items given
@@ -145,8 +145,12 @@ public class GoogleSearchImageService  implements SearchImagesService{
                 item = gson.fromJson(obj.toString(), GoogleImage.class);
                 Utils.log("GoogleSearchImageService deserialized json to GoogleImage: ", item.toString());
                 url = item.getImageUrl();
-                if (url != null)
-                    items.add(item.getImageUrl());
+                if (item.getImageUrl() != null) {
+                    ImageResult imageResult = new ImageResult(item.getImageUrl());
+                    imageResult.setTitle(item.getTitle());
+                    imageResult.setThumbnailUrl(item.image.thumbnailLink);
+                    items.add(imageResult);
+                }
                 else
                     Utils.log("Empty image url");
             }
@@ -192,6 +196,10 @@ public class GoogleSearchImageService  implements SearchImagesService{
                 return link;
             else
                 return null;
+        }
+
+        public String getTitle() {
+            return title;
         }
 
         private class ImageObj {

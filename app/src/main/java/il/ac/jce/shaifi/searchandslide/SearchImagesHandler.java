@@ -6,5 +6,5 @@ import java.util.List;
  * Created by fisher on 28/01/2016.
  */
 public interface SearchImagesHandler {
-    public void handleImagesList(List<String> imagesUrls);
+    public void handleImagesList(List<ImageResult> imageResults);
 }
