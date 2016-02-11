@@ -2,4 +2,9 @@
     <string name="app_name">SearchAndSlide</string>
     <string name="action_settings">Settings</string>
     <string name="search">Search</string>
+    <string name="message_search_images">Searching for images....</string>
+    <string name="message_found_no_images">Could not find any images for this search string.</string>
+    <string name="message_web_service_failed">Image web service failed with the following error: </string>
+    <string name="message_web_service_response_failed">Image web service response failed with the following error: </string>
+    <string name="message_web_service_return_number">Found the following number of images: </string>
 </resources>

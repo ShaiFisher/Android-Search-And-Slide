@@ -45,24 +45,34 @@ public class BingSearchImageService  implements SearchImagesService{
     // api key to use with the search web service
     private final String mApiKey = "HRUwANcXIhfzALDqQzYAi9qlwUd1sgrtJkw+ex4hX1w";
 
+    // returned images list
     private List<ImageResult> mImageUrls;
     private SearchImagesHandler mImageHandler;
     private Context mContext;
+    private ProgressDialog mDialog;
 
     public BingSearchImageService(Context context, SearchImagesHandler handler){
         mImageUrls = new ArrayList<ImageResult>();
         mImageHandler = handler;
         mContext = context;
         mHttpRequestQueue = Volley.newRequestQueue(mContext);
+        mDialog = new ProgressDialog(mContext);
+        mDialog.setTitle(mContext.getString(R.string.message_search_images));
     }
+
+    // override this function so we can run it here in this class
     @Override
     public void searchImages(String strQuery) {
         Utils.log("BingSearchImageService for query:", strQuery);
 
+        // remove all spaces from search string
+        strQuery = strQuery.trim();
+
+        // generate web service url from the search string
         String webServiceUrl = generateUrl(strQuery);
 
+        // request the images from web service and return an image list
         getNewImageList(webServiceUrl);
-
     }
 
     // generate the url to send request to
@@ -77,6 +87,9 @@ public class BingSearchImageService  implements SearchImagesService{
     // generate image list from given url
     private void getNewImageList(String url) {
 
+        // start the waiting dialog
+        mDialog.show();
+
         // generate the web service request
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -87,23 +100,28 @@ public class BingSearchImageService  implements SearchImagesService{
                     public void onResponse(JSONObject response) {
 
                         try {
-                            Utils.log("BingSearchImageService got json:", response.toString());
+                            Utils.log("BingSearchImageService got response: ", response.toString());
 
                             // 1. get the list of all images
                             JSONObject obj = response.getJSONObject("d");
                             JSONArray arrImages = obj.getJSONArray("results");
                             if (arrImages.length() == 0)
-                                displayError("found no images for this search");
+                                displayMessage(mContext.getString(R.string.message_found_no_images));
                             else {
                                 // 2. generate url string array from the json array of image items
                                 mImageUrls = getImagesFromJSON(arrImages);
                                 // 3. display all images on activity
                                 mImageHandler.handleImagesList(mImageUrls);
+                                // 4. display toast with returned images found
+                                displayMessage(mContext.getString(R.string.message_web_service_return_number) + " " + mImageUrls.size());
                             }
+                            // 5. stop the wait dialog
+                            mDialog.cancel();
                         }
                         catch (JSONException ex){
-                            // stop the wait dialog if exception occured
-                            displayError("image web service failed: " + ex.getMessage());
+                            // stop the wait dialog
+                            mDialog.cancel();
+                            displayMessage(mContext.getString(R.string.message_web_service_failed) + ex.getMessage());
                             ex.printStackTrace();
                         }
                     }
@@ -112,13 +130,14 @@ public class BingSearchImageService  implements SearchImagesService{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // stop the wait dialog if response has errors
-                        displayError("image web service failed to respond: " + error.getMessage());
+                        // stop the wait dialog
+                        mDialog.cancel();
+                        displayMessage(mContext.getString(R.string.message_web_service_response_failed) + error.getMessage());
                         error.printStackTrace();
                     }
                 }
         ) {
-            // add the bing api key to the request headers
+            // add the bing api key to the request headers to authenticate
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -129,15 +148,11 @@ public class BingSearchImageService  implements SearchImagesService{
             }
         } ;
 
-
-
         // add the request to the http queue
         mHttpRequestQueue.add(request);
-
     }
 
-
-    // extract a string array of urls from the json
+    // extract a string array of images from the json
     private ArrayList<ImageResult> getImagesFromJSON(JSONArray imageArray) throws JSONException{
 
         JSONObject obj;
@@ -154,8 +169,9 @@ public class BingSearchImageService  implements SearchImagesService{
                 Gson gson = new GsonBuilder().create();
                 Utils.log("BingSearchImageService deserializing json: ", obj.toString());
                 item = gson.fromJson(obj.toString(), BingImage.class);
-                Utils.log("BingSearchImageService deserialized json to GoogleImage: ", item.toString());
+                Utils.log("BingSearchImageService deserialized json to BingImage: ", item.toString());
                 url = item.getImageUrl();
+                // convert the BingImage object to our ImageResult object to be returned
                 if (item.getImageUrl() != null) {
                     ImageResult imageResult = new ImageResult(item.getImageUrl());
                     imageResult.setTitle(item.getTitle());
@@ -172,22 +188,19 @@ public class BingSearchImageService  implements SearchImagesService{
 
         Utils.log("BingSearchImageService returned url list: ", items.toString());
 
-        // return the result weather array
+        // return the result image array
         return items;
     }
 
+    // display a toast with the given string
+    private void displayMessage(String strMessage) {
 
-
-    // display a toast from the given error
-    private void displayError(String strErr) {
-
-        CharSequence text = strErr;
+        CharSequence text = strMessage;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(mContext, text, duration);
         toast.show();
     }
-
 
     private class BingImage {
 
@@ -212,7 +225,6 @@ public class BingSearchImageService  implements SearchImagesService{
         public String getTitle() {
             return Title;
         }
-
 
         private class thumbnail {
             private String MediaUrl;
