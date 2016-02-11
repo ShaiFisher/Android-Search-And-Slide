@@ -34,7 +34,8 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         Utils.log("onCreate");
 
         //searchImagesService = new DummySearchImagesService(this, this);
-        searchImagesService = new GoogleSearchImageService(this, this);
+        //searchImagesService = new GoogleSearchImageService(this, this);
+        searchImagesService = new BingSearchImageService(this, this);
 
         imageView = (ImageView) findViewById(R.id.imageView);
         txtQuery = (EditText) findViewById(R.id.txt_query);
