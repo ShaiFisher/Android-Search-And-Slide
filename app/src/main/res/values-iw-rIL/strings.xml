@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SearchAndSlide</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="search">חיפוש</string>
+    <string name="message_search_images">מחפש תמונות...</string>
+    <string name="message_found_no_images">לא נמצאו תמונות עבור החיפוש הזה.</string>
+    <string name="message_web_service_failed">מנוע חיפוש התמונות נכשל עם הודעת השגיאה:</string>
+    <string name="message_web_service_response_failed">תגובת מנוע חיפוש התמונות נכשלה עם הודעת השגיאה:</string>
+    <string name="message_web_service_return_number">נמצאו תמונות: </string>
+</resources>
