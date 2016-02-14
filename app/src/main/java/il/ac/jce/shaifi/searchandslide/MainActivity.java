@@ -2,10 +2,13 @@ package il.ac.jce.shaifi.searchandslide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,14 +22,17 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements SearchImagesHandler {
 
-    private EditText txtQuery;
+    //private EditText txtQuery;
     private Button btnSearch;
     private ImageView imageView;
     private TextView txtImageInfo;
+    private AutoCompleteTextView txtQuery;
     //private Bitmap image;
     private SearchImagesService searchImagesService;
     private List<ImageResult> imageResults;
     private int currentImageIndex;
+    private History history;
+    private ArrayAdapter<String> historyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +44,20 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         //searchImagesService = new DummySearchImagesService(this, this);
         //searchImagesService = new GoogleSearchImageService(this, this);
         searchImagesService = new BingSearchImageService(this, this);
+        history = new History(this);
 
         imageView = (ImageView) findViewById(R.id.imageView);
-        txtQuery = (EditText) findViewById(R.id.txt_query);
+        //txtQuery = (EditText) findViewById(R.id.txt_query);
+        //txtQuery.setText(history.getLastQuery());
         btnSearch = (Button) findViewById(R.id.btn_search);
         txtImageInfo = (TextView) findViewById(R.id.txt_imageInfo);
+        txtQuery = (AutoCompleteTextView)findViewById(R.id.txt_query);
+
+        historyAdapter = new ArrayAdapter<String>
+                (this,android.R.layout.select_dialog_item, history.getHistory());
+        txtQuery.setAdapter(historyAdapter);
+        txtQuery.setTextColor(Color.WHITE);
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
@@ -51,6 +66,8 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                      imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
                      // search
                      searchImagesService.searchImages(txtQuery.getText().toString());
+                     // add to history
+                     history.add(txtQuery.getText().toString());
                  }
              }
         );
@@ -72,6 +89,11 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        history.save();
+    }
 
     @Override
     public void handleImagesList(List<ImageResult> imageResults) {
