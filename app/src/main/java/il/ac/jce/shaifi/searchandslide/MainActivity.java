@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.squareup.picasso.*;
+import com.squareup.picasso.Callback;
+
 import java.util.List;
 
 
@@ -55,13 +57,13 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
-                Utils.log("onSwipeRight");
+                //Utils.log("onSwipeRight");
                 currentImageIndex++;
                 displayCurrentImage();
             }
 
             public void onSwipeLeft() {
-                Utils.log("onSwipeLeft");
+                //Utils.log("onSwipeLeft");
                 currentImageIndex--;
                 displayCurrentImage();
             }
@@ -80,27 +82,42 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     }
 
     private void displayCurrentImage() {
+        final Context context = this;
         if (currentImageIndex == -1) {
             currentImageIndex = imageResults.size() - 1;
         }
         if (currentImageIndex == imageResults.size()) {
             currentImageIndex = 0;
         }
-        ImageResult imageResult = imageResults.get(currentImageIndex);
+        final ImageResult imageResult = imageResults.get(currentImageIndex);
 
-        txtImageInfo.setText((currentImageIndex+1) + " / " + imageResults.size());
+        txtImageInfo.setText((currentImageIndex + 1) + " / " + imageResults.size());
         if (imageResult.getThumbnailUrl() != null) {
+            //Utils.log("loading thumbnail first:", imageResult.getThumbnailUrl());
             Picasso.with(this)
                     .load(imageResult.getThumbnailUrl())
+                    .placeholder(R.drawable.placeholder)
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Picasso.with(context)
+                                    .load(imageResult.getUrl())
+                                    .placeholder(imageView.getDrawable())
+                                    .into(imageView);
+                        }
+
+                        @Override
+                        public void onError() {}
+                    });
+        } else {
+            //Utils.log("loading image:", imageResult.getUrl());
+            Picasso.with(this)
+                    .load(imageResult.getUrl())
                     .placeholder(R.drawable.placeholder)
                     .into(imageView);
         }
 
-        Utils.log("loading image:", imageResult.getUrl());
-        Picasso.with(this)
-            .load(imageResult.getUrl())
-            .placeholder(R.drawable.placeholder)
-            .into(imageView);
+
 
         // preload next image
         if (currentImageIndex + 1 < imageResults.size()) {
