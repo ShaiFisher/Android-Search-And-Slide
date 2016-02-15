@@ -64,10 +64,13 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                      // hide keyboard
                      InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                      imm.hideSoftInputFromWindow(txtQuery.getWindowToken(), 0);
+
+                     String query = txtQuery.getText().toString();
                      // search
-                     searchImagesService.searchImages(txtQuery.getText().toString());
+                     searchImagesService.searchImages(query);
                      // add to history
-                     history.add(txtQuery.getText().toString());
+                     history.add(query);
+                     historyAdapter.insert(query, 0);
                  }
              }
         );
