@@ -19,15 +19,14 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:weightSum="1">
+            android:weightSum="1" >
 
             <il.ac.jce.shaifi.searchandslide.InstantAutoComplete
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:id="@+id/txt_query"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
 
             <!--EditText
                 android:layout_width="wrap_content"
@@ -54,21 +53,11 @@
                 android:layout_gravity="center" />
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:id="@+id/imageView"
-            android:layout_weight="10"/>
-
-        <TextView
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/txt_imageInfo"
-            android:layout_gravity="bottom|left"
-            android:textColor="#f7f7f7"
-            android:layout_weight="0.1"/>
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </RelativeLayout>

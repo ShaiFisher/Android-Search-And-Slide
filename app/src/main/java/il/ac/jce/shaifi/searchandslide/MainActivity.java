@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -24,21 +26,21 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
 
     //private EditText txtQuery;
     private Button btnSearch;
-    private ImageView imageView;
-    private TextView txtImageInfo;
+    private ViewPager viewPager;
     private AutoCompleteTextView txtQuery;
     //private Bitmap image;
     private SearchImagesService searchImagesService;
     private List<ImageResult> imageResults;
-    private int currentImageIndex;
     private History history;
     private ArrayAdapter<String> historyAdapter;
+    private SwipePageAdapter mSwipePager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final SearchImagesHandler self = this;
         setContentView(R.layout.activity_main);
+
         Utils.log("onCreate");
 
         //searchImagesService = new DummySearchImagesService(this, this);
@@ -46,17 +48,19 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         searchImagesService = new BingSearchImageService(this, this);
         history = new History(this);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
         //txtQuery = (EditText) findViewById(R.id.txt_query);
         //txtQuery.setText(history.getLastQuery());
         btnSearch = (Button) findViewById(R.id.btn_search);
-        txtImageInfo = (TextView) findViewById(R.id.txt_imageInfo);
+        //txtImageInfo = (TextView) findViewById(R.id.txt_imageInfo);
         txtQuery = (AutoCompleteTextView)findViewById(R.id.txt_query);
 
         historyAdapter = new ArrayAdapter<String>
                 (this,android.R.layout.select_dialog_item, history.getHistory());
         txtQuery.setAdapter(historyAdapter);
         txtQuery.setTextColor(Color.WHITE);
+
+        // set the pager adapter to swipe images
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
                  @Override
@@ -74,7 +78,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                  }
              }
         );
-
+/*
         imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
                 //Utils.log("onSwipeRight");
@@ -88,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                 displayCurrentImage();
             }
         });
-
+*/
 
     }
 
@@ -101,11 +105,12 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     @Override
     public void handleImagesList(List<ImageResult> imageResults) {
         this.imageResults = imageResults;
-        currentImageIndex = 0;
-        Utils.log("results recieved:", imageResults.size());
-        displayCurrentImage();
-    }
+        mSwipePager = new SwipePageAdapter(MainActivity.this, this.imageResults);
+        viewPager.setAdapter(mSwipePager);
 
+        Utils.log("results recieved:", imageResults.size());
+    }
+/*
     private void displayCurrentImage() {
         final Context context = this;
         if (currentImageIndex == -1) {
@@ -116,8 +121,13 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         }
         final ImageResult imageResult = imageResults.get(currentImageIndex);
 
-        txtImageInfo.setText((currentImageIndex + 1) + " / " + imageResults.size());
+        String strImageInfo = (currentImageIndex + 1) + " / " + imageResults.size();
+        txtImageInfo.setText(strImageInfo);
         if (imageResult.getThumbnailUrl() != null) {
+
+            mSwipePager.instantiateItem(mViewGroup, currentImageIndex);
+
+
             //Utils.log("loading thumbnail first:", imageResult.getThumbnailUrl());
             Picasso.with(this)
                     .load(imageResult.getThumbnailUrl())
@@ -134,6 +144,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                         @Override
                         public void onError() {}
                     });
+
         } else {
             //Utils.log("loading image:", imageResult.getUrl());
             Picasso.with(this)
@@ -150,5 +161,5 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                     .load(imageResults.get(currentImageIndex + 1).getUrl())
                     .fetch();
         }
-    }
+    }*/
 }
