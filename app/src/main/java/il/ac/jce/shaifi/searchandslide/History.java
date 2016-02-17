@@ -2,9 +2,6 @@ package il.ac.jce.shaifi.searchandslide;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -130,7 +130,6 @@ public class GoogleSearchImageService  implements SearchImagesService{
     private ArrayList<ImageResult> getImagesFromJSON(JSONArray imageArray) throws JSONException{
 
         JSONObject obj;
-        String url;
         ArrayList<ImageResult> items = new ArrayList<ImageResult>();
         GoogleImage item;
 
@@ -144,7 +143,6 @@ public class GoogleSearchImageService  implements SearchImagesService{
                 Utils.log("GoogleSearchImageService deserializing json: ", obj.toString());
                 item = gson.fromJson(obj.toString(), GoogleImage.class);
                 Utils.log("GoogleSearchImageService deserialized json to GoogleImage: ", item.toString());
-                url = item.getImageUrl();
                 if (item.getImageUrl() != null) {
                     ImageResult imageResult = new ImageResult(item.getImageUrl());
                     imageResult.setTitle(item.getTitle());

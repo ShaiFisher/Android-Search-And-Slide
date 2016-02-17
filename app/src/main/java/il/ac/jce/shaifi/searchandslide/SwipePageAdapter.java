@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.squareup.picasso.*;
-
 import java.util.List;
 
 /**
@@ -56,7 +54,7 @@ public class SwipePageAdapter extends PagerAdapter{
 
         if (imageResult.getThumbnailUrl() != null) {
             Picasso.with(mContext)
-                    .load(imageResult.getUrl())
+                    .load(imageResult.getThumbnailUrl())
                     .placeholder(R.drawable.placeholder)
                     .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
