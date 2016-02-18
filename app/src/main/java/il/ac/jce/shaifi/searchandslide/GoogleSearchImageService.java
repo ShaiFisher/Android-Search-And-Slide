@@ -2,6 +2,7 @@ package il.ac.jce.shaifi.searchandslide;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -70,7 +71,7 @@ public class GoogleSearchImageService  implements SearchImagesService{
         url += "?key=" + mApiKey;
         url += "&cx=" + mSearchEngineId;
         url += "&searchType=image";
-        url += "&q=" + strQuery;
+        url += "&q=" + Uri.encode(strQuery);
         Utils.log("GoogleSearchImageService start url:", url);
         return url;
     }

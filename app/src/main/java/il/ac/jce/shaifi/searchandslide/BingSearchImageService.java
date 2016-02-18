@@ -2,6 +2,7 @@ package il.ac.jce.shaifi.searchandslide;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -71,7 +72,7 @@ public class BingSearchImageService  implements SearchImagesService{
     private String generateUrl(String strQuery) {
         String url = mUrlImageSearch;
         url += "?$format=json";
-        url += "&Query=%27" + strQuery + "%27";
+        url += "&Query=%27" + Uri.encode(strQuery) + "%27";
         Utils.log("BingSearchImageService start url:", url);
         return url;
     }
