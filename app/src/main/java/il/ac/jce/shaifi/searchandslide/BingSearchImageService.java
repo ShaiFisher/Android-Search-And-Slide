@@ -148,6 +148,7 @@ public class BingSearchImageService  implements SearchImagesService{
     // extract a string array of images from the json
     private ArrayList<ImageResult> getImagesFromJSON(JSONArray imageArray) throws JSONException{
 
+        Gson gson = new GsonBuilder().create();
         JSONObject obj;
         String url;
         ArrayList<ImageResult> items = new ArrayList<ImageResult>();
@@ -159,7 +160,6 @@ public class BingSearchImageService  implements SearchImagesService{
             // get the specific object
             obj = imageArray.getJSONObject(i);
             try{
-                Gson gson = new GsonBuilder().create();
                 Utils.log("BingSearchImageService deserializing json: ", obj.toString());
                 item = gson.fromJson(obj.toString(), BingImage.class);
                 Utils.log("BingSearchImageService deserialized json to BingImage: ", item.toString());
