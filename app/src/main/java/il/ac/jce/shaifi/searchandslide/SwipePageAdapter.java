@@ -52,7 +52,7 @@ public class SwipePageAdapter extends PagerAdapter{
         txtImagePlacement.setText(strImagePlacement);
         txtImageTitle.setText(imageResult.getTitle());
 
-        if (imageResult.getThumbnailUrl() != null) {
+        if (imageResult.hasThumbnail()) {
             Picasso.with(mContext)
                     .load(imageResult.getThumbnailUrl())
                     .placeholder(R.drawable.placeholder)

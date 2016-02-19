@@ -5,15 +5,6 @@
     android:orientation="vertical" >
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/txtImageTitle"
-        android:layout_gravity="bottom|right"
-        android:textColor="#f7f7f7"
-        android:layout_weight="0.1" />
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,12 +12,29 @@
         android:id="@+id/imageView"
         android:layout_weight="10"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/txtImagePlacement"
-        android:layout_gravity="bottom|left"
-        android:textColor="#f7f7f7"
-        android:layout_weight="0.1" />
+        android:layout_weight="0.1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/txtImagePlacement"
+            android:layout_gravity="bottom|left"
+            android:textColor="#f7f7f7"
+            android:layout_weight="0.1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/txtImageTitle"
+            android:layout_gravity="bottom|right"
+            android:textColor="#f7f7f7"
+            android:layout_weight="0.9"
+            android:gravity="right"/>
+    </LinearLayout>
 </LinearLayout>

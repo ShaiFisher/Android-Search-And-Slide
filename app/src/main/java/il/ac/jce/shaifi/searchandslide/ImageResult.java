@@ -32,4 +32,6 @@ public class ImageResult {
     public void setThumbnailUrl(String url) {
         thumbnailUrl = url;
     }
+
+    public boolean hasThumbnail() { return (thumbnailUrl != null && !thumbnailUrl.isEmpty()); }
 }
