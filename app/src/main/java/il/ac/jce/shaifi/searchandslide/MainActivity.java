@@ -48,7 +48,6 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     }
 
     private void initComponents() {
-
         mGson= new GsonBuilder().create();
 
         // load search service
@@ -63,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         // load autocomplete history
         history = new History(this);
         historyAdapter = new ArrayAdapter<String>
-                (this, android.R.layout.select_dialog_item, history.getHistory());
+                (this, R.layout.history_item, history.getHistory());
         txtQuery.setAdapter(historyAdapter);
         txtQuery.setTextColor(Color.WHITE);
 
@@ -83,6 +82,8 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
                  searchImagesService.searchImages(query);
                  // add to history
                  history.add(query);
+                 // add to adapter (couldnt refresh from history, i don't know why)
+                 historyAdapter.remove(query);
                  historyAdapter.insert(query, 0);
              }
         });

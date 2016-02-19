@@ -44,14 +44,8 @@ public class History {
     }
 
     public void add(String query) {
-        if (!query.equals(getLastQuery())) {
-            queries.add(0, query);
-            for(int i=queries.size()-1; i>0; i--) {
-                if (queries.get(i).equals(query)) {
-                    queries.remove(i);
-                }
-            }
-        }
+        queries.remove(query);
+        queries.add(0, query);
     }
 
     public void save() {
