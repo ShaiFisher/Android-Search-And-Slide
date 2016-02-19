@@ -24,6 +24,7 @@ public class InstantAutoComplete extends AutoCompleteTextView {
         return true;
     }
 
+    // override default list to open automaticaly on focus and not only with first char
     @Override
     protected void onFocusChanged(boolean focused, int direction,
                                   Rect previouslyFocusedRect) {
