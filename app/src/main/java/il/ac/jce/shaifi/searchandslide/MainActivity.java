@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     private List<ImageResult> imageResults;
     private History history;
     private ArrayAdapter<String> historyAdapter;
-    private SwipePageAdapter mSwipePager;
+    private SwipePagerAdapter mSwipePager;
     private Gson mGson;
 
 
@@ -37,8 +37,6 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Utils.log("onCreate");
 
         initComponents();
 
@@ -50,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
     private void initComponents() {
         mGson= new GsonBuilder().create();
 
-        // load search service
+        // load search service (possible to load google or dummy services also)
         //searchImagesService = new DummySearchImagesService(this, this);
         //searchImagesService = new GoogleSearchImageService(this, this);
         searchImagesService = new BingSearchImageService(this, this);
@@ -109,22 +107,26 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         }
     }
 
+    // while stopping save the history list
     @Override
     public void onStop() {
         super.onStop();
         history.save();
     }
 
+    // overriding this method so it can run from the inherited class
+    // this method gets an image list and display it on the cativity
     @Override
     public void handleImagesList(List<ImageResult> imageResults) {
+        // set the image list localy
         this.imageResults = imageResults;
-        mSwipePager = new SwipePageAdapter(MainActivity.this, this.imageResults);
+        // init the swipe pager class
+        mSwipePager = new SwipePagerAdapter(MainActivity.this, this.imageResults);
+        // set the page adapter with the swipe pager class so images could be swiped
         viewPager.setAdapter(mSwipePager);
-
-        Utils.log("results recieved:", imageResults.size());
     }
 
-    // save search while app going to sleep or changes orientation
+    // save search results while app going to sleep or changes orientation
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Store UI state to the savedInstanceState.

@@ -7,15 +7,19 @@ import java.util.List;
 
 /**
  * Created by fisher on 27/01/2016.
+ * this class is a dummy search image class to be used as mock data
  */
 public class DummySearchImagesService implements SearchImagesService {
 
     private SearchImagesHandler mImageHandler;
 
+    // constructor that gets the activity context for doing visual stuff
+    // and SearchImagesHandler to send the image list through
     public DummySearchImagesService(Context context, SearchImagesHandler handler){
         mImageHandler = handler;
     }
 
+    // override this function so we can run it here in this class
     @Override
     public void searchImages(String query) {
         Utils.log("searchImages:", query);
@@ -32,7 +36,7 @@ public class DummySearchImagesService implements SearchImagesService {
 
     private ImageResult generateSearchResult(String url) {
         ImageResult imageResult = new ImageResult(url);
-        imageResult.setTitle("This is a descibe of the image");
+        imageResult.setTitle("This is a description of the image");
         return imageResult;
     }
 }

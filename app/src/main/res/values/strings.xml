@@ -6,7 +6,8 @@
     <string name="queryResults">queryResults</string>
     <string name="message_search_images">Searching for images....</string>
     <string name="message_found_no_images">Could not find any images for this search string.</string>
-    <string name="message_web_service_failed">Image web service failed with the following error: </string>
-    <string name="message_web_service_response_failed">Image web service response failed with the following error: </string>
+    <string name="message_web_service_failed">Image web service failed</string>
     <string name="message_web_service_return_number">Found the following number of images: </string>
+    <string name="message_load_image_fail">Failed to load image</string>
+
 </resources>

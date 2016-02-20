@@ -5,6 +5,12 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.AutoCompleteTextView;
 
+
+/**
+ * Created by fisher on 10/02/2016.
+ * this class is for overriding the AutoCompleteTextView class so the autocomplete popup
+ * would open immediately when a user clicks on the component and not after the first key
+ */
 public class InstantAutoComplete extends AutoCompleteTextView {
 
     public InstantAutoComplete(Context context) {

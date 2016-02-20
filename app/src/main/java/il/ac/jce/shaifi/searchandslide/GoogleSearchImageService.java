@@ -1,10 +1,7 @@
 package il.ac.jce.shaifi.searchandslide;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,17 +17,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by itais on 08-Feb-16.
+ * this class implements image search on the google search engine
+ * gets a search string and returns an ImageResult array with the search results
  */
 public class GoogleSearchImageService  implements SearchImagesService{
 
@@ -38,9 +31,8 @@ public class GoogleSearchImageService  implements SearchImagesService{
     private RequestQueue mHttpRequestQueue;
 
     // url of the google web service
-    // private final String mUrlImageSearch = "https://www.googleapis.com/customsearch/v1?key=AIzaSyAhiU0VSynjFE9xfXsOS64zxyq-dziNsSM&cx=017530607855097223459:gx-1qpn0cyi&q=%D7%91%D7%99%D7%91%D7%99&searchType=imaget";
     private final String mUrlImageSearch = "https://www.googleapis.com/customsearch/v1";
-          //  "?key=&cx=&q=Type=image";
+
     // api key to use with the search web service
     private final String mApiKey = "AIzaSyAhiU0VSynjFE9xfXsOS64zxyq-dziNsSM";
     private final String mSearchEngineId = "017530607855097223459:gx-1qpn0cyi";
@@ -49,30 +41,36 @@ public class GoogleSearchImageService  implements SearchImagesService{
     private SearchImagesHandler mImageHandler;
     private Context mContext;
 
+    // constructor that gets the activity context for doing visual stuff
+    // and SearchImagesHandler to send the image list through
     public GoogleSearchImageService(Context context, SearchImagesHandler handler){
         mImageUrls = new ArrayList<ImageResult>();
         mImageHandler = handler;
         mContext = context;
         mHttpRequestQueue = Volley.newRequestQueue(mContext);
     }
+
+    // override this function so we can run it here in this class
     @Override
     public void searchImages(String strQuery) {
-        Utils.log("GoogleSearchImageService for query:", strQuery);
-
         String webServiceUrl = generateUrl(strQuery);
 
         getNewImageList(webServiceUrl);
-
     }
 
     // generate the url to send request to
     private String generateUrl(String strQuery) {
+        // remove all spaces from search string
+        strQuery = strQuery.trim();
+
+        // encode the search to be good as a url string
+        strQuery = Uri.encode(strQuery);
+
         String url = mUrlImageSearch;
         url += "?key=" + mApiKey;
         url += "&cx=" + mSearchEngineId;
         url += "&searchType=image";
-        url += "&q=" + Uri.encode(strQuery);
-        Utils.log("GoogleSearchImageService start url:", url);
+        url += "&q=" + strQuery;
         return url;
     }
 
@@ -89,13 +87,11 @@ public class GoogleSearchImageService  implements SearchImagesService{
                     public void onResponse(JSONObject response) {
 
                         try {
-                            Utils.log("GoogleSearchImageService got json:", response.toString());
-
                             // check if got any images
                             JSONObject obj = response.getJSONObject("searchInformation");
                             int imagesNumber = obj.getInt("totalResults");
                             if (imagesNumber == 0)
-                                displayError("found no images for this search");
+                                Utils.displayMessage(mContext, mContext.getString(R.string.message_found_no_images));
                             else {
                                 // 1. get the list of all images
                                 JSONArray arrImages = response.getJSONArray("items");
@@ -103,11 +99,13 @@ public class GoogleSearchImageService  implements SearchImagesService{
                                 mImageUrls = getImagesFromJSON(arrImages);
                                 // 3. display all images on activity
                                 mImageHandler.handleImagesList(mImageUrls);
+                                // 4. display toast with returned images found
+                                Utils.displayMessage(mContext, mContext.getString(R.string.message_web_service_return_number) + " " + mImageUrls.size());
                             }
                         }
                         catch (JSONException ex){
                             // stop the wait dialog if exception occured
-                            displayError("image web service failed: " + ex.getMessage());
+                            Utils.displayMessage(mContext, mContext.getString(R.string.message_web_service_failed));
                         }
                     }
                 },
@@ -116,7 +114,7 @@ public class GoogleSearchImageService  implements SearchImagesService{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // stop the wait dialog if response has errors
-                        displayError("image web service failed to respond: " + error.getMessage());
+                        Utils.displayMessage(mContext, mContext.getString(R.string.message_web_service_failed));
                     }
                 }
         );
@@ -140,43 +138,26 @@ public class GoogleSearchImageService  implements SearchImagesService{
             // get the specific object
             obj = imageArray.getJSONObject(i);
             try{
+                // convert json into a googleItem object
                 Gson gson = new GsonBuilder().create();
-                Utils.log("GoogleSearchImageService deserializing json: ", obj.toString());
+                // convert the GoogleImage object to our ImageResult object to be returned (if url exist)
                 item = gson.fromJson(obj.toString(), GoogleImage.class);
-                Utils.log("GoogleSearchImageService deserialized json to GoogleImage: ", item.toString());
                 if (item.getImageUrl() != null) {
                     ImageResult imageResult = new ImageResult(item.getImageUrl());
                     imageResult.setTitle(item.getTitle());
                     imageResult.setThumbnailUrl(item.image.thumbnailLink);
                     items.add(imageResult);
                 }
-                else
-                    Utils.log("Empty image url");
             }
             catch(Exception e) {
-                Utils.log("GoogleSearchImageService", e);
+                e.printStackTrace();
             }
         }
-
-        Utils.log("GoogleSearchImageService returned url list: ", items.toString());
-
-        // return the result weather array
+        // return the result image array
         return items;
     }
 
-
-
-    // display a toast from the given error
-    private void displayError(String strErr) {
-
-        CharSequence text = strErr;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(mContext, text, duration);
-        toast.show();
-    }
-
-
+    // inner class to hold a google image object
     private class GoogleImage {
 
         private String kind;

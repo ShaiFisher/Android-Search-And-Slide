@@ -2,6 +2,7 @@ package il.ac.jce.shaifi.searchandslide;
 
 /**
  * Created by fisher on 10/02/2016.
+ * this class is for representing an image object with all its properties
  */
 public class ImageResult {
 
