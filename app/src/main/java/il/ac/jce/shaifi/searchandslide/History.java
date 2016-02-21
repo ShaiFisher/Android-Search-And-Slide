@@ -38,7 +38,7 @@ public class History {
         }
     }
 
-    // method to return the last search query that wwas entered
+    // method to return the last search query that was entered
     public String getLastQuery() {
 
         if (queries.isEmpty())

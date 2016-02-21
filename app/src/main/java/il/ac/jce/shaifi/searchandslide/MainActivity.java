@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements SearchImagesHandl
         });
     }
 
-    // this method is for reloading the activity - for orientation chnage etc.
+    // this method is for reloading the activity - for orientation change etc.
     // this method must be loaded AFTER all components have been loaded
     private void reload(Bundle savedInstanceState) {
 
