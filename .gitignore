@@ -40,3 +40,13 @@ proguard/
 # Android Studio captures folder
 captures/
 >>>>>>> b327baa581ca74e85ee5e5702cc405aa6ffed92f
+.idea/dictionaries/itais.xml
+Search-And-Slide.iml
+.idea/.name
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
+app/app.iml
